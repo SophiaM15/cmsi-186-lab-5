@@ -7,11 +7,11 @@ public class PodRace {
         if (distance <= 0) {
             throw new IllegalArgumentException("Pod has to move forward");
         }
-        if (timeSlice <= 0) {
-            throw new IllegalArgumentException("Time cannot be zero or negative");
+        if (timeLimit < 0) {
+            throw new IllegalArgumentException("Time cannot be negative");
         }
-        if (timeSlice > 2) {
-            throw new IllegalArgumentException("Time slice must be less than two");
+        if (timeSlice <= 0 || timeSlice > 2) {
+            throw new IllegalArgumentException("Time cannot be zero or negative and slices must be less than 2");
         }
 
         var distances = new HashMap<Pod, Double>();
@@ -19,14 +19,15 @@ public class PodRace {
         var winners = new HashSet<Pod>();
         for (var t = 0; t < timeLimit; t += timeSlice) {
             for (var pod : racers) {
-                var distanceForThisTimeSlice = pod.distanceTraveled(t, t + timeSlice, 1);
+                var distanceForThisTimeSlice = pod.distanceTraveled(t, t+timeSlice, 1);
                 distances.put(pod, distances.getOrDefault(pod, 0.0) + distanceForThisTimeSlice);
                 if (distances.get(pod) >= distance) {
                     winners.add(pod);
                 }
             }
-            if (winners.isEmpty()) {
+            if (winners.isEmpty() != true) {
                 return winners;
             }
         }
+        return winners;
 }
